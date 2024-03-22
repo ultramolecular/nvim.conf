@@ -242,7 +242,15 @@ require('lazy').setup({
   --    require('Comment').setup({})
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  {
+    'numToStr/Comment.nvim',
+    opts = {
+      toggler = {
+        -- Line comment toggle keymap
+        line = '<C-_>',
+      },
+    },
+  },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
@@ -744,7 +752,12 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      -- vim.cmd.colorscheme ''
+      -- vim.cmd.colorscheme 'tokyonight-night'
+      require('onedark').setup {
+        style = 'darker',
+      }
+
+      require('onedark').load()
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
