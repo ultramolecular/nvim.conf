@@ -1,25 +1,5 @@
 --[[
 
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
 What is Kickstart?
 
   Kickstart.nvim is *not* a distribution.
@@ -117,6 +97,10 @@ vim.opt.clipboard = 'unnamedplus'
 
 -- Enable break indent
 vim.opt.breakindent = true
+
+-- Set tab width to 4 spaces
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
 
 -- Save undo history
 vim.opt.undofile = true
@@ -292,12 +276,18 @@ require('lazy').setup({
       require('which-key').setup()
 
       -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+      require('which-key').add {
+        { '<leader>c', name = '[C]ode' },
+        { '<leader>d', name = '[D]ocument' },
+        { '<leader>g', name = '[G]it' },
+        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>r', name = '[R]ename' },
+        { '<leader>s', name = '[S]earch' },
+        { '<leader>t', name = '[T]oggle' },
+        { '<leader>w', name = '[W]orkspace' },
+        -- register which-key VISUAL mode
+        -- required for visual <leader>hs (hunk stage) to work
+        { '<leader>', name = 'VISUAL <leader>', mode = { 'v' } },
       }
     end,
   },
@@ -552,7 +542,7 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -703,7 +693,7 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          ['<CR>'] = cmp.mapping.confirm { select = true },
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
@@ -837,12 +827,35 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
-
   { -- Plugin for LaTeX files
     'lervag/vimtex',
     init = function()
       -- Make zathura default pdf viewer
       vim.g.vimtex_view_method = 'zathura'
+      -- Set the LaTeX compiler to xelatex
+      -- vim.g.vimtex_compiler_latexmk = {
+      --   build_dir = '',
+      --   callback = 1,
+      --   continuous = 1,
+      --   executable = 'latexmk',
+      --   options = {
+      --     '-xelatex',
+      --     '-file-line-error',
+      --     '-synctex=1',
+      --     '-interaction=nonstopmode',
+      --   },
+      -- }
+      vim.g.vimtex_compiler_latexmk_engines = {
+        _ = '-xelatex',
+      }
+    end,
+  },
+  { -- Plugin to be able to delete/add surrounding a word in nvim
+    'kylechui/nvim-surround',
+    version = '*', -- Use the latest stable version
+    event = 'VeryLazy', -- Optional: Load plugin lazily
+    config = function()
+      require('nvim-surround').setup {}
     end,
   },
 
